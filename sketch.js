@@ -1,34 +1,34 @@
+var socket;
 const r1 = 30;
 const r2 = r1;
-let team = 'A';
-let players = [];
+let team = 0;
+let players0 = [];
+let players1 = [];
 let isMoving = false;
+const courtW = 600;
+const courtH = 800;
+const buttonW = 50;
+const buttonH = 50;
 
 function setup() {
-  createCanvas(700, 800);
-
+  createCanvas(courtW+buttonW, courtH);
+  socket = io.connect('http://localhost:8080');
+  append(players0, new Player(courtW/2,courtH/2,0,0,true));
 }
 
 function draw() {
   drawCourt();
-  if (players.length > 0){
-    for (i=0;i<players.length;i++){
-      if(mouseIsPressed){
-        players[i].move();
-      }
-      players[i].draw();
-    }
-    console.log(i);
-  }
+  drawPlayser(players0);
+  drawPlayser(players1);
 }
 
 function drawCourt(){
   background(220);
-  //右上  
+  //ボタン  
   fill(255,0,0);
-  rect(600,0,100,50);
+  rect(courtW,0,buttonW,buttonH);
   fill(0,0,255);
-  rect(600,50,100,50);
+  rect(courtW,buttonH,buttonW,buttonH);
   //コート
   fill(0,150,0);
   noStroke();
@@ -49,38 +49,74 @@ function drawCourt(){
 
 function mouseClicked(){
   if((600<mouseX)&&(mouseX<700)&&(0<mouseY)&&(mouseY<50)){
-    team = 'A';
+    team = 0;
   } else if ((600<mouseX)&&(mouseX<700)&&(50<mouseY)&&(mouseY<100)){
-    team = 'B';
+    team = 1;
   } else {
-    if (isMoving) {
+    if (isMoving) { //移動終了
       isMoving = false;
-    } else {
-      append(players, new Player(mouseX,mouseY));
+    } else { //新規追加
+      if (team == 0){
+        id = players0.length + 1;
+        append(players0, new Player(mouseX,mouseY,team,id));
+      } else {
+        id = players1.length + 1;
+        append(players1, new Player(mouseX,mouseY,team,id));
+      }
+    }
+  }
+}
+
+function drawPlayser(ps){
+  if (ps.length > 0){
+    for (i=0;i<ps.length;i++){
+      if(mouseIsPressed){
+        ps[i].move();
+      }
+      ps[i].draw();
     }
   }
 }
 
 class Player{
-constructor(x0,y0){
-    this.x = x0;
-    this.y = y0;
-    this.team = team;
+  constructor(x0,y0,t,i,iv=false){
+    this.mx = x0;
+    this.my = y0;
+    this.x = 100*mouseX/courtW-50;
+    this.y = 100*mouseY/courtH-50;
+    this.team = t;
+    this.isView = iv;
+    this.id = i;
   }
   draw(){
-    if (this.team == 'A'){
+    if (this.isView){
+      fill(255,255,0);
+    } else if (this.team == 0){
       fill(255,0,0);
     } else {
       fill(0,0,255);
     }
-    circle(this.x,this.y,r1);
+    circle(this.mx,this.my,r1);
   }
   move(){
-     if((this.x-r2<mouseX)&&(mouseX<this.x+r2)&&(this.y-r2<mouseY)&&(mouseY<this.y+r2)){
-        this.x = mouseX;
-        this.y = mouseY;
+     if((this.mx-r2<mouseX)&&(mouseX<this.mx+r2)&&(this.my-r2<mouseY)&&(mouseY<this.my+r2)){
         isMoving = true;
+        this.mx = mouseX;
+        this.my = mouseY;
+        this.x = 100*mouseX/courtW-50;
+        this.y = 100*mouseY/courtH-50;
+
+        var data = {
+          id: this.id,
+          team: this.team,
+          x: this.x,
+          y: this.y
+        };
+        socket.emit('move',data);
     }
+  }
+  setView(is){
+    isView = is;
   }
 }
   
