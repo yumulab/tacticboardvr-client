@@ -82,11 +82,10 @@ function drawPlayser(ps){
 
 class Player{
   constructor(x0,y0,t,i,iv=false){
-
     this.team = t;
     this.isView = iv;
     this.id = i;
-    this.setPos();
+    this.setPos(x0,y0);
     this.sendPos();
   }
   draw(){
@@ -102,18 +101,18 @@ class Player{
   move(){
      if((this.mx-r2<mouseX)&&(mouseX<this.mx+r2)&&(this.my-r2<mouseY)&&(mouseY<this.my+r2)){
         isMoving = true;
-        this.setPos();
+        this.setPos(mouseX,mouseY);
         this.sendPos();
     }
   }
   setView(is){
-    isView = is;
+    this.isView = is;
   }
-  setPos(){
-    this.mx = mouseX;
-    this.my = mouseY;
-    this.x = (unityX/50)*(100*mouseX/courtW-50);
-    this.y = (unityY/50)*(100*mouseY/courtH-50);
+  setPos(mx0,my0){
+    this.mx = mx0;
+    this.my = my0;
+    this.x = (unityX/50)*(100*this.mx/courtW-50);
+    this.y = (unityY/50)*(100*this.my/courtH-50);
   }
   sendPos(){
     var data = {
