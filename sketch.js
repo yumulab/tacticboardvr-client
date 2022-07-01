@@ -9,6 +9,8 @@ const courtW = 600;
 const courtH = 800;
 const buttonW = 50;
 const buttonH = 50;
+const unityX = 36;
+const unityY = -55;
 
 function setup() {
   createCanvas(courtW+buttonW, courtH);
@@ -80,13 +82,14 @@ function drawPlayser(ps){
 
 class Player{
   constructor(x0,y0,t,i,iv=false){
-    this.mx = x0;
-    this.my = y0;
-    this.x = 100*mouseX/courtW-50;
-    this.y = 100*mouseY/courtH-50;
+    this.mx = mouseX;
+    this.my = mouseY;
+    this.x = (unityX/50)*(100*mouseX/courtW-50);
+    this.y = (unityY/50)*(100*mouseY/courtH-50);
     this.team = t;
     this.isView = iv;
     this.id = i;
+    this.sendPos();
   }
   draw(){
     if (this.isView){
@@ -103,20 +106,22 @@ class Player{
         isMoving = true;
         this.mx = mouseX;
         this.my = mouseY;
-        this.x = 100*mouseX/courtW-50;
-        this.y = 100*mouseY/courtH-50;
-
-        var data = {
-          id: this.id,
-          team: this.team,
-          x: this.x,
-          y: this.y
-        };
-        socket.emit('move',data);
+        this.x = (unityX/50)*(100*mouseX/courtW-50);
+        this.y = (unityY/50)*(100*mouseY/courtH-50);
+        this.sendPos();
     }
   }
   setView(is){
     isView = is;
+  }
+  sendPos(){
+    var data = {
+      id: this.id,
+      team: this.team,
+      x: this.x,
+      y: this.y
+    };
+    socket.emit('move',data);
   }
 }
   
