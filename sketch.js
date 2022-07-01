@@ -5,12 +5,33 @@ let team = 0;
 let players0 = [];
 let players1 = [];
 let isMoving = false;
-const courtW = 600;
-const courtH = 800;
-const buttonW = 50;
-const buttonH = 50;
+//const courtW = 600;
+//const courtH = 800;
+const scale = 12;
+const courtW = 68*scale;
+const courtH = 105*scale;
+const courtM = 40;
+const buttonW = 164;
+const buttonH = courtH/2;
+const goalW = 18.32*scale;
+const goalH = 5.5*scale;
+const penaW = 40.32*scale;
+const penaH = 16.5*scale;
+const penaP = 11*scale;
+const centerR = 2*9.15*scale;
+const penaR = centerR;
+
 const unityX = 36;
 const unityY = -55;
+
+
+
+// スクロールしないようにする ここから
+function disableScroll(event) {
+  event.preventDefault();
+}
+document.addEventListener('touchmove', disableScroll, { passive: false });
+// ここまで
 
 function setup() {
   createCanvas(courtW+buttonW, courtH);
@@ -34,19 +55,22 @@ function drawCourt(){
   //コート
   fill(0,150,0);
   noStroke();
-  rect(0,0,600,800);
+  rect(0,0,courtW,courtH);
   stroke(255);
   strokeWeight(2);
   noFill();
-  rect(25,25,550,375);
-  rect(25,25,550,750);
-  ellipse(300,400,140);
-  rect(240,25,120,60);
-  rect(175,25,250,150);
-  arc(300, 175, 100, 50, 0, PI);
-  rect(240,715,120,60);
-  rect(175,625,250,150);
-  arc(300, 625, 100, 50, PI, 0);
+  rect(courtM,courtM,courtW-2*courtM,courtH/2-courtM); //枠(上半分)
+  rect(courtM,courtH/2,courtW-2*courtM,courtH/2-courtM); //枠(下半分)
+  ellipse(courtW/2,courtH/2,centerR); //センターサークル
+  ellipse(courtW/2,courtH/2,2); //上ペナルティポイント
+  rect(courtW/2-goalW/2,courtM,goalW,goalH); //上ゴールエリア
+  rect(courtW/2-penaW/2,courtM,penaW,penaH); //上ペナルティエリア
+  ellipse(courtW/2,courtM+penaP,2); //上ペナルティポイント
+  arc(courtW/2,courtM+penaP,penaR,penaR,PI*0.205,PI*0.795); //上ペナルティアーク
+  rect(courtW/2-goalW/2,courtH-goalH-courtM,goalW,goalH); //下ゴールエリア
+  rect(courtW/2-penaW/2,courtH-penaH-courtM,penaW,penaH); //下ペナルティエリア
+  ellipse(courtW/2,courtH-courtM-penaP,2); //下ペナルティポイント
+  arc(courtW/2,courtH-courtM-penaP,penaR,penaR,PI*1.205,PI*1.795); //下ペナルティアーク
 }
 
 function mouseClicked(){
