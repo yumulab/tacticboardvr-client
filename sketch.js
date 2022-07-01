@@ -74,9 +74,9 @@ function drawCourt(){
 }
 
 function mouseClicked(){
-  if((600<mouseX)&&(mouseX<700)&&(0<mouseY)&&(mouseY<50)){
+  if((courtW<mouseX)&&(mouseX<courtW+buttonW)&&(0<mouseY)&&(mouseY<buttonH)){
     team = 0;
-  } else if ((600<mouseX)&&(mouseX<700)&&(50<mouseY)&&(mouseY<100)){
+  } else if ((courtW<mouseX)&&(mouseX<courtW+buttonW)&&(buttonH<mouseY)&&(mouseY<12*buttonH)){
     team = 1;
   } else {
     if (isMoving) { //移動終了
