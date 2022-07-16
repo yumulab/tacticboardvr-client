@@ -1,0 +1,5 @@
+//このファイル名を setting.js に変更する
+exports.oscLocalAddress = "127.0.0.1";
+exports.oscLocalPort = 8001;
+exports.oscRemoteAddress = "127.0.0.1"; // ビューワのIPアドレス
+exports.oscRemotePort = 8000; // ビューワのOSC待受ポート

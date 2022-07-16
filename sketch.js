@@ -24,7 +24,7 @@ const penaR = centerR;
 const unityX = 36;
 const unityY = -55;
 
-
+const ioServer = 'http://127.0.0.1:8080'; // ブラウザでアクセスするURLと同じにする
 
 // スクロールしないようにする ここから
 function disableScroll(event) {
@@ -35,7 +35,7 @@ document.addEventListener('touchmove', disableScroll, { passive: false });
 
 function setup() {
   createCanvas(courtW+buttonW, courtH);
-  socket = io.connect('http://localhost:8080');
+  socket = io.connect(ioServer);
   append(players0, new Player(courtW/2,courtH/2,0,0,true));
 }
 
@@ -48,9 +48,9 @@ function draw() {
 function drawCourt(){
   background(220);
   //ボタン  
-  fill(255,0,0);
-  rect(courtW,0,buttonW,buttonH);
   fill(0,0,255);
+  rect(courtW,0,buttonW,buttonH);
+  fill(255,0,0);
   rect(courtW,buttonH,buttonW,buttonH);
   //コート
   fill(0,150,0);
@@ -73,11 +73,29 @@ function drawCourt(){
   arc(courtW/2,courtH-courtM-penaP,penaR,penaR,PI*1.205,PI*1.795); //下ペナルティアーク
 }
 
+function touchStarted(){
+  if((courtW<mouseX)&&(mouseX<courtW+buttonW)&&(0<mouseY)&&(mouseY<buttonH)){
+    team = 1;
+  } else if ((courtW<mouseX)&&(mouseX<courtW+buttonW)&&(buttonH<mouseY)&&(mouseY<12*buttonH)){
+    team = 0;
+  } else { //新規追加
+    if (team == 0){
+      id = players0.length + 1;
+      append(players0, new Player(mouseX,mouseY,team,id));
+    } else {
+      id = players1.length + 1;
+      append(players1, new Player(mouseX,mouseY,team,id));
+    }
+  }
+}
+
+
+/*
 function mouseClicked(){
   if((courtW<mouseX)&&(mouseX<courtW+buttonW)&&(0<mouseY)&&(mouseY<buttonH)){
-    team = 0;
-  } else if ((courtW<mouseX)&&(mouseX<courtW+buttonW)&&(buttonH<mouseY)&&(mouseY<12*buttonH)){
     team = 1;
+  } else if ((courtW<mouseX)&&(mouseX<courtW+buttonW)&&(buttonH<mouseY)&&(mouseY<12*buttonH)){
+    team = 0;
   } else {
     if (isMoving) { //移動終了
       isMoving = false;
@@ -92,7 +110,7 @@ function mouseClicked(){
     }
   }
 }
-
+*/
 function drawPlayser(ps){
   if (ps.length > 0){
     for (i=0;i<ps.length;i++){
@@ -148,8 +166,3 @@ class Player{
     socket.emit('move',data);
   }
 }
-  
-  
-  
-  
-  

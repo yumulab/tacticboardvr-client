@@ -1,12 +1,16 @@
 const osc = require("osc");
 const keypress = require("keypress");
+const settings = require('./settings.js');
+const oscLocalAddress = settings.oscLocalAddress;
+const oscLocalPort = settings.oscLocalPort;
+const oscRemoteAddress = settings.oscRemoteAddress;
+const oscRemotePort = settings.oscRemotePort;
 
 var udpPort = new osc.UDPPort({
-  localAddress: "0.0.0.0",
-  localPort: 8001,
-  //remoteAddress: "192.168.50.201",
-  remoteAddress: "127.0.0.1",
-  remotePort: 8000,
+  localAddress: oscLocalAddress,
+  localPort: oscLocalPort,
+  remoteAddress: oscRemoteAddress,
+  remotePort: oscRemotePort,
   metadata: true,
 });
 
@@ -110,7 +114,7 @@ function handleRequest(req, res) {
 
 const io = require('socket.io')(server, {
   cors: {
-      origin: "http://localhost:8100",
+      origin: "http://127.0.0.1:8081",
       methods: ["GET", "POST"],
       transports: ['websocket', 'polling'],
       credentials: true
