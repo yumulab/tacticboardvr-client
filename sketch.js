@@ -1,7 +1,7 @@
 var socket;
 const r1 = 30;
-const r2 = r1;
-let team = 0;
+const r2 = 20; //選手の移動/追加判別の半径閾値(吸い込み範囲)
+let team = 1;
 let players0 = [];
 let players1 = [];
 let isMoving = false;
@@ -24,7 +24,8 @@ const penaR = centerR;
 const unityX = 36;
 const unityY = -55;
 
-const ioServer = 'http://127.0.0.1:8080'; // ブラウザでアクセスするURLと同じにする
+//const ioServer = 'http://127.0.0.1:8080'; // ブラウザでアクセスするURLと同じにする
+const ioServer = 'http://172.20.10.13:8080'; // ブラウザでアクセスするURLと同じにする
 
 // スクロールしないようにする ここから
 function disableScroll(event) {
@@ -46,7 +47,7 @@ function draw() {
 }
 
 function drawCourt(){
-  background(220);
+  //background(220);
   //ボタン  
   fill(0,0,255);
   rect(courtW,0,buttonW,buttonH);
@@ -54,6 +55,7 @@ function drawCourt(){
   rect(courtW,buttonH,buttonW,buttonH);
   //コート
   fill(0,150,0);
+  // fill(197,223,180); //ポスター背景
   noStroke();
   rect(0,0,courtW,courtH);
   stroke(255);
@@ -119,6 +121,7 @@ function drawPlayser(ps){
       }
       ps[i].draw();
     }
+    ps[0].draw(); //視点プレイヤーを常に表示するために最後に描画
   }
 }
 
